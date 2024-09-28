@@ -77,7 +77,6 @@ class SupervisedTrainerBase:
             name=self.cfgs.data_cfgs.train_name,
             size=self.cfgs.data_cfgs.train_size,
             split=self.cfgs.data_cfgs.train_split,
-            subset=self.cfgs.data_cfgs.train_subset,
             data_files=self.cfgs.data_cfgs.train_data_files,
             optional_args=self.cfgs.data_cfgs.train_optional_args,
         )
@@ -97,7 +96,6 @@ class SupervisedTrainerBase:
                 name=self.cfgs.data_cfgs.eval_name,
                 split=self.cfgs.data_cfgs.eval_split,
                 size=self.cfgs.data_cfgs.eval_size,
-                subset=self.cfgs.data_cfgs.eval_subset,
                 data_files=self.cfgs.data_cfgs.eval_data_files,
                 optional_args=self.cfgs.data_cfgs.eval_optional_args,
             )
@@ -126,7 +124,6 @@ class SupervisedTrainerBase:
                     name=self.cfgs.data_cfgs.train_name[i] if self.cfgs.data_cfgs.train_name else None,
                     size=self.cfgs.data_cfgs.train_size[i] if self.cfgs.data_cfgs.train_size else None,
                     split=self.cfgs.data_cfgs.train_split[i] if self.cfgs.data_cfgs.train_split else None,
-                    subset=self.cfgs.data_cfgs.train_subset[i] if self.cfgs.data_cfgs.train_subset else None,
                     data_files=self.cfgs.data_cfgs.train_data_files[i] if self.cfgs.data_cfgs.train_data_files else None,
                     optional_args=self.cfgs.data_cfgs.train_optional_args[i] if len(self.cfgs.data_cfgs.train_optional_args)>0 else [],
                 )
@@ -158,7 +155,6 @@ class SupervisedTrainerBase:
                         name=self.cfgs.data_cfgs.eval_name[i],
                         split=self.cfgs.data_cfgs.eval_split[i],
                         size=self.cfgs.data_cfgs.eval_size[i],
-                        subset=self.cfgs.data_cfgs.eval_subset[i],
                         data_files=self.cfgs.data_cfgs.eval_data_files[i],
                         optional_args=self.cfgs.data_cfgs.eval_optional_args[i],
                     )

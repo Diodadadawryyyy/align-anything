@@ -29,8 +29,9 @@ source ./setup.sh
 deepspeed \
 	--master_port ${MASTER_PORT} \
 	--module align_anything.trainers.text_image_to_text.rm \
+	--train_name text-image-to-text \
 	--model_name_or_path ${MODEL_NAME_OR_PATH} \
 	--train_datasets ${TRAIN_DATASETS} \
 	--output_dir ${OUTPUT_DIR} \
 	--train_split train \
-	--train_template align-anything \
+	--train_template align_anything
