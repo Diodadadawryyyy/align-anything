@@ -17,10 +17,10 @@
 
 
 # Initialize variables
-MODEL_NAME_OR_PATH=""
-TRAIN_DATASETS=""
-EVAL_DATASET=""
-OUTPUT_DIR=""
+MODEL_NAME_OR_PATH="llava-hf/llava-1.5-7b-hf"
+TRAIN_DATASETS="PKU-Alignment/Align-Anything"
+EVAL_DATASET="PKU-Alignment/Align-Anything"
+OUTPUT_DIR="../output/rm"
 
 # Source the setup script
 source ./setup.sh
@@ -28,7 +28,9 @@ source ./setup.sh
 # Execute deepspeed command
 deepspeed \
 	--master_port ${MASTER_PORT} \
-	--module align_anything.trainers.text_to_text.rm \
+	--module align_anything.trainers.text_image_to_text.rm \
 	--model_name_or_path ${MODEL_NAME_OR_PATH} \
 	--train_datasets ${TRAIN_DATASETS} \
-	--output_dir ${OUTPUT_DIR}
+	--output_dir ${OUTPUT_DIR} \
+	--train_split train \
+	--train_template align-anything \
