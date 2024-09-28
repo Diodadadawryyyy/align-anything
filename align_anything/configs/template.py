@@ -127,19 +127,16 @@ class align_anything:
     split_token: str = 'ASSISTANT:'
 
     def format_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any]:
-        response_1 = raw_sample['response_1']
-        response_2 = raw_sample['response_2']
-        p_response = raw_sample['p_response']
-        prompt = raw_sample['question']
-        image = raw_sample['image']
-
-        # 根据 p_response 来决定哪个是更好的响应，哪个是更差的响应
-        if p_response == 1:
-            better_response = response_1
-            worse_response = response_2
+        # 根据 p_response 的值判断 better_response 和 worse_response
+        if raw_sample['p_response'] == 1:
+            better_response = raw_sample['response_1']
+            worse_response = raw_sample['response_2']
         else:
-            better_response = response_2
-            worse_response = response_1
+            better_response = raw_sample['response_2']
+            worse_response = raw_sample['response_1']
+
+        prompt = raw_sample['question']
+        image_path = raw_sample['image']
 
         formatted_prompt = (
             f'{self.system_prompt}'
@@ -151,37 +148,30 @@ class align_anything:
         formatted_worse_output = (
             f'{self.assistant_prompt.format(output=worse_response)}'
         )
-        image = image.convert('RGBA')
 
         return {
             'prompt': formatted_prompt,
             'better_text': formatted_better_output,
             'worse_text': formatted_worse_output,
-            'image': image,
+            'image': image_path,
         }
 
     def check_equal(self, raw_sample: dict[str, Any]) -> bool:
-        response_1 = raw_sample['response_1']
-        response_2 = raw_sample['response_2']
-        p_response = raw_sample['p_response']
-    
-        is_equal = p_response == response_1 or p_response == response_2
-        return is_equal
+        return raw_sample['response_1'] == raw_sample['response_2']
 
     def format_prompt_only_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any]:
         prompt = raw_sample['question'].replace('<image>\n', '').replace('\n<image>', '').replace('<image>', '')
-        image = raw_sample['image']
+        image_path = raw_sample['image']
 
         formatted_prompt = (
             f'{self.system_prompt}'
             f'{self.user_prompt.format(input=prompt)}'
             f'{self.assistant_prompt.format(output="")}'
         )
-        image = image.convert('RGBA')
 
         return {
             'text': formatted_prompt,
-            'image': image,
+            'image': image_path,
         }
 
 
