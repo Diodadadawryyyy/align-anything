@@ -119,6 +119,71 @@ class Template(ABC):
         else:
             raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
 
+@register_template('align_anything')
+class align_anything:
+    system_prompt: str = "A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions. "
+    user_prompt: str = 'USER: \n<image> {input}'
+    assistant_prompt: str = '\nASSISTANT: {output}'
+    split_token: str = 'ASSISTANT:'
+
+    def format_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any]:
+        response_1 = raw_sample['response_1']
+        response_2 = raw_sample['response_2']
+        p_response = raw_sample['p_response']
+        prompt = raw_sample['question']
+        image = raw_sample['image']
+
+        # 根据 p_response 来决定哪个是更好的响应，哪个是更差的响应
+        if p_response == 1:
+            better_response = response_1
+            worse_response = response_2
+        else:
+            better_response = response_2
+            worse_response = response_1
+
+        formatted_prompt = (
+            f'{self.system_prompt}'
+            f'{self.user_prompt.format(input=prompt)}'
+        )
+        formatted_better_output = (
+            f'{self.assistant_prompt.format(output=better_response)}'
+        )
+        formatted_worse_output = (
+            f'{self.assistant_prompt.format(output=worse_response)}'
+        )
+        image = image.convert('RGBA')
+
+        return {
+            'prompt': formatted_prompt,
+            'better_text': formatted_better_output,
+            'worse_text': formatted_worse_output,
+            'image': image,
+        }
+
+    def check_equal(self, raw_sample: dict[str, Any]) -> bool:
+        response_1 = raw_sample['response_1']
+        response_2 = raw_sample['response_2']
+        p_response = raw_sample['p_response']
+    
+        is_equal = p_response == response_1 or p_response == response_2
+        return is_equal
+
+    def format_prompt_only_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any]:
+        prompt = raw_sample['question'].replace('<image>\n', '').replace('\n<image>', '').replace('<image>', '')
+        image = raw_sample['image']
+
+        formatted_prompt = (
+            f'{self.system_prompt}'
+            f'{self.user_prompt.format(input=prompt)}'
+            f'{self.assistant_prompt.format(output="")}'
+        )
+        image = image.convert('RGBA')
+
+        return {
+            'text': formatted_prompt,
+            'image': image,
+        }
+
 
 @register_template('Dialogue')
 class Dialogue(Template):
