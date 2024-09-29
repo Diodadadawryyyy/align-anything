@@ -100,6 +100,14 @@ class PreferenceDataset(Dataset):
 
         raw_better_text = ''
         raw_worse_text = ''
+        
+        # 检查 formatted_sample 是否为 None
+        if formatted_sample is None:
+            return None
+
+        # 检查并过滤掉 'better_text' 和 'worse_text' 为 None 的样本
+        if formatted_sample.get('better_text') is None or formatted_sample.get('worse_text') is None:
+            return None
 
         if isinstance(formatted_sample['better_text'], list):
             raw_better_text = self.tokenizer.eos_token.join(formatted_sample['better_text'])
@@ -143,6 +151,13 @@ class PreferenceDataset(Dataset):
         """Get a tokenized data sample by index."""
         raw_sample = self.raw_data[self.valid_indices[index]]
         data = self.preprocess(raw_sample)
+
+        # 处理 None 的情况，例如跳过或重新获取样本
+        while data is None:
+            index = (index + 1) % len(self.valid_indices)
+            raw_sample = self.raw_data[self.valid_indices[index]]
+            data = self.preprocess(raw_sample)
+
         return data
 
     def __len__(self) -> int:

@@ -175,6 +175,190 @@ class align_anything:
         }
 
 
+@register_template('PKUSafeRLHFSeverityBased')
+class PKUSafeRLHFSeverityBased(Template):
+    system_prompt: str = 'BEGINNING OF CONVERSATION: '
+    user_prompt: str = 'USER: {input} '
+    assistant_prompt: str = 'ASSISTANT:{output}'
+    split_token: str = 'ASSISTANT:'
+    separator: str = ''
+
+    def format_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any]|None:
+        severity_0 = raw_sample['response_0_severity_level']
+        severity_1 = raw_sample['response_1_severity_level']
+        
+        if severity_0 != severity_1:
+            better_response = 'response_0' if severity_0 < severity_1 else 'response_1'
+            worse_response = 'response_1' if better_response == 'response_0' else 'response_0'
+            prompt = raw_sample['prompt']
+
+            formatted_better_output = (
+                f'{self.system_prompt}'
+                f'{self.user_prompt.format(input=prompt)}'
+                f'{self.assistant_prompt.format(output=raw_sample[better_response])}'
+            )
+            formatted_worse_output = (
+                f'{self.system_prompt}'
+                f'{self.user_prompt.format(input=prompt)}'
+                f'{self.assistant_prompt.format(output=raw_sample[worse_response])}'
+            )
+
+            return {
+                'better_text': formatted_better_output,
+                'worse_text': formatted_worse_output,
+            }
+        return 
+
+    def check_equal(self, raw_sample: dict[str, Any]) -> bool:
+        return False
+
+    def format_prompt_only_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any]:
+        prompt = raw_sample['prompt']
+
+        formatted_prompt = (
+            f'{self.system_prompt}'
+            f'{self.user_prompt.format(input=prompt)}'
+            f'{self.assistant_prompt.format(output="")}'
+        )
+
+        return {'text': formatted_prompt}
+
+@register_template('PKUSafeRLHFBetterBased')
+class PKUSafeRLHFBetterBased(Template):
+    system_prompt: str = 'BEGINNING OF CONVERSATION: '
+    user_prompt: str = 'USER: {input} '
+    assistant_prompt: str = 'ASSISTANT:{output}'
+    split_token: str = 'ASSISTANT:'
+    separator: str = ''
+
+    def format_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any]:
+        better_response_id = raw_sample['better_response_id']
+        better_response = f'response_{int(better_response_id)}'
+        worse_response = f'response_{1-int(better_response_id)}'
+        prompt = raw_sample['prompt']
+
+        formatted_better_output = (
+            f'{self.system_prompt}'
+            f'{self.user_prompt.format(input=prompt)}'
+            f'{self.assistant_prompt.format(output=raw_sample[better_response])}'
+        )
+        formatted_worse_output = (
+            f'{self.system_prompt}'
+            f'{self.user_prompt.format(input=prompt)}'
+            f'{self.assistant_prompt.format(output=raw_sample[worse_response])}'
+        )
+
+        return {
+            'better_text': formatted_better_output,
+            'worse_text': formatted_worse_output,
+        }
+
+    def check_equal(self, raw_sample: dict[str, Any]) -> bool:
+        return False
+
+    def format_prompt_only_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any]:
+        prompt = raw_sample['prompt']
+
+        formatted_prompt = (
+            f'{self.system_prompt}'
+            f'{self.user_prompt.format(input=prompt)}'
+            f'{self.assistant_prompt.format(output="")}'
+        )
+
+        return {'text': formatted_prompt}
+
+@register_template('PKUSafeRLHFSaferBased')
+class PKUSafeRLHFSaferBased(Template):
+    system_prompt: str = 'BEGINNING OF CONVERSATION: '
+    user_prompt: str = 'USER: {input} '
+    assistant_prompt: str = 'ASSISTANT:{output}'
+    split_token: str = 'ASSISTANT:'
+    separator: str = ''
+
+    def format_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any]:
+        safer_response_id = raw_sample['safer_response_id']
+        safer_response = f'response_{int(safer_response_id)}'
+        worse_response = f'response_{1-int(safer_response_id)}'
+        prompt = raw_sample['prompt']
+
+        formatted_better_output = (
+            f'{self.system_prompt}'
+            f'{self.user_prompt.format(input=prompt)}'
+            f'{self.assistant_prompt.format(output=raw_sample[safer_response])}'
+        )
+        formatted_worse_output = (
+            f'{self.system_prompt}'
+            f'{self.user_prompt.format(input=prompt)}'
+            f'{self.assistant_prompt.format(output=raw_sample[worse_response])}'
+        )
+
+        return {
+            'better_text': formatted_better_output,
+            'worse_text': formatted_worse_output,
+        }
+    
+    def check_equal(self, raw_sample: dict[str, Any]) -> bool:
+        return False
+
+    def format_prompt_only_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any]:
+        prompt = raw_sample['prompt']
+
+        formatted_prompt = (
+            f'{self.system_prompt}'
+            f'{self.user_prompt.format(input=prompt)}'
+            f'{self.assistant_prompt.format(output="")}'
+        )
+
+        return {'text': formatted_prompt}
+
+@register_template('PKUSafeRLHFConsistentBased')
+class PKUSafeRLHFConsistentBased(Template):
+    system_prompt: str = 'BEGINNING OF CONVERSATION: '
+    user_prompt: str = 'USER: {input} '
+    assistant_prompt: str = 'ASSISTANT:{output}'
+    split_token: str = 'ASSISTANT:'
+    separator: str = ''
+
+    def format_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any] | None:
+        better_response_id = raw_sample['better_response_id']
+        safer_response_id = raw_sample['safer_response_id']
+        
+        if better_response_id == safer_response_id:
+            better_response = f'response_{int(better_response_id)}'
+            worse_response = f'response_{1-int(better_response_id)}'
+            prompt = raw_sample['prompt']
+
+            formatted_better_output = (
+                f'{self.system_prompt}'
+                f'{self.user_prompt.format(input=prompt)}'
+                f'{self.assistant_prompt.format(output=raw_sample[better_response])}'
+            )
+            formatted_worse_output = (
+                f'{self.system_prompt}'
+                f'{self.user_prompt.format(input=prompt)}'
+                f'{self.assistant_prompt.format(output=raw_sample[worse_response])}'
+            )
+
+            return {
+                'consistent_better_text': formatted_better_output,
+                'consistent_worse_text': formatted_worse_output,
+            }
+        return None
+
+    def check_equal(self, raw_sample: dict[str, Any]) -> bool:
+        return False
+
+    def format_prompt_only_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any]:
+        prompt = raw_sample['prompt']
+
+        formatted_prompt = (
+            f'{self.system_prompt}'
+            f'{self.user_prompt.format(input=prompt)}'
+            f'{self.assistant_prompt.format(output="")}'
+        )
+
+        return {'text': formatted_prompt}
+
 @register_template('Dialogue')
 class Dialogue(Template):
     system_prompt: str = 'BEGINNING OF CONVERSATION: '
