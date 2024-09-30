@@ -17,17 +17,19 @@
 
 
 # Initialize variables
-MODEL_NAME_OR_PATH=""
-TRAIN_DATASETS=""
-OUTPUT_DIR=""
+MODEL_NAME_OR_PATH="Qwen2.5-0.5B"
+TRAIN_DATASETS="PKU-Alignment/PKU-SafeRLHF"
+OUTPUT_DIR="../output/dpo"
 
 # Source the setup script
 source ./setup.sh
 
-# Execute deepspeed command
+# Execute deepspeed command for single-dimension helpfulness
 deepspeed \
-	--master_port ${MASTER_PORT} \
-	--module align_anything.trainers.text_to_text.dpo \
-	--model_name_or_path ${MODEL_NAME_OR_PATH} \
-	--train_datasets ${TRAIN_DATASETS} \
-	--output_dir ${OUTPUT_DIR}
+    --master_port ${MASTER_PORT} \
+    --module align_anything.trainers.text_to_text.dpo \
+    --model_name_or_path ${MODEL_NAME_OR_PATH} \
+    --train_datasets ${TRAIN_DATASETS} \
+    --output_dir ${OUTPUT_DIR}/helpfulness \
+    --train_split "train" \
+    --train_template "helpfulness"

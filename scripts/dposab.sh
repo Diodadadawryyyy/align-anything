@@ -17,7 +17,7 @@
 
 
 # Initialize variables
-MODEL_NAME_OR_PATH="Qwen2.5-0.5B"
+MODEL_NAME_OR_PATH="Qwen/Qwen2.5-0.5B"
 TRAIN_DATASETS="PKU-Alignment/PKU-SafeRLHF"
 OUTPUT_DIR="../output/dposab"
 
