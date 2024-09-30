@@ -107,7 +107,7 @@ model_cfgs:
 # Configuration for training with LoRA
 lora_cfgs:
   # Whether to use LoRA
-  use_lora: False
+  use_lora: True
   # Task type for LoRA configuration
   task_type: TaskType.CAUSAL_LM
   # Inference mode
