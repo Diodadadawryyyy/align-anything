@@ -83,8 +83,7 @@ class PreferenceDataset(Dataset):
             split=split,
             data_files=data_files,
             *optional_args,
-            trust_remote_code=True,
-            batch_size=16
+            trust_remote_code=True
         )
         self.valid_indices = self.filter_indices()
 
